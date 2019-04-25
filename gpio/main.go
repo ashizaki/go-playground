@@ -1,14 +1,17 @@
 package main
 
 import (
-	"time"
-
 	"gobot.io/x/gobot"
 	"gobot.io/x/gobot/drivers/gpio"
 	"gobot.io/x/gobot/platforms/raspi"
+	"time"
 )
 
 func main() {
+	servoTest()
+}
+
+func ledTest() {
 	r := raspi.NewAdaptor()
 	led := gpio.NewLedDriver(r, "7")
 
@@ -21,6 +24,28 @@ func main() {
 	robot := gobot.NewRobot("blinkBot",
 		[]gobot.Connection{r},
 		[]gobot.Device{led},
+		work,
+	)
+
+	robot.Start()
+}
+
+func servoTest() {
+	r := raspi.NewAdaptor()
+	servo := gpio.NewServoDriver(r, "12")
+
+	var angle uint8 = 0
+
+	work := func() {
+		gobot.Every(1*time.Second, func() {
+			servo.Move(angle)
+			angle++
+		})
+	}
+
+	robot := gobot.NewRobot("servoBot",
+		[]gobot.Connection{r},
+		[]gobot.Device{servo},
 		work,
 	)
 
