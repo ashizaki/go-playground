@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"gobot.io/x/gobot"
 	"gobot.io/x/gobot/drivers/gpio"
 	"gobot.io/x/gobot/platforms/raspi"
@@ -38,7 +39,10 @@ func servoTest() {
 
 	work := func() {
 		gobot.Every(1*time.Second, func() {
-			servo.Move(angle)
+			fmt.Printf("serve angle:%d\n", angle)
+			if err := servo.Move(angle); err != nil {
+				fmt.Println(err)
+			}
 			angle++
 		})
 	}
